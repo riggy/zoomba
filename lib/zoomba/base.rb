@@ -1,8 +1,17 @@
 module Zoomba
   class Base < OpenStruct
+    def assign(args = {})
+      args.each do |key, value|
+        next if key.to_sym == :id
+        send("#{key}=", value)
+      end
+      self
+    end
+
     def self.perform_request(action, data = {})
-      response = Net::HTTP.start(resource_uri(action).host,
-                                 resource_uri(action).port,
+      uri = URI("#{Zoomba.configuration.api_base_url}/#{resource_path_part}/#{action}")
+      response = Net::HTTP.start(uri.host,
+                                 uri.port,
                                  use_ssl: true) do |http|
         request = Net::HTTP::Post.new(uri)
         request.set_form_data(Zoomba.configuration.to_h.merge(data))
@@ -10,6 +19,10 @@ module Zoomba
       end
 
       process_response(response)
+    end
+
+    def perform_request(action, data = {})
+      self.class.perform_request(action, data)
     end
 
     def self.process_response(response)
@@ -29,10 +42,6 @@ module Zoomba
 
     def resource_path_part
       self.class.resource_path_part
-    end
-
-    def resource_uri(action)
-      @uri ||= URI("#{Zoomba.configuration.api_base_url}/#{resource_path_part}/#{action}")
     end
   end
 end
