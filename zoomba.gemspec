@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['krzysztof@rygiel.net']
 
   spec.summary       = 'Zoom.us API implementation'
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.homepage      = "https://github.com/riggy/zoomba"
   spec.license       = 'MIT'
 
   spec.files = `git ls-files -z`.split("\x0").reject do |f|
