@@ -6,8 +6,30 @@
 # Zoomba
 
 Zoomba is implementation of Zoom.us API, loosely inspired by [zoomus gem](https://github.com/mllocs/zoomus).
-It aims to provide assistance with operating with Zoom.us data, providing object mapping and convenient methods
-to interact with Zoom.us.
+
+It aims to provide object mapping for Zoom.us data and convenient methods to interact with those data and the API.
+
+## Supported API endpoints
+
+So far gem supports the following Zoom.us endpoints:
+
+* /user/create
+* /user/autocreate
+* /user/custcreate
+* /user/ssocreate
+* /user/list
+* /user/pending
+* /user/get
+* /user/getbyemail
+* /user/checkemail
+* /user/checkzpk
+* /user/delete
+* /user/deactivate
+* /user/update
+* /user/updatepassword
+* /user/revoketoken
+* /user/permanentdelete
+
 
 ## Installation
 
@@ -24,6 +46,23 @@ And then execute:
 Or install it yourself as:
 
     $ gem install zoomba
+
+## Usage
+
+First configure Zoomba with this code:
+
+    Zoomba.configure do |c|
+      c.api_key = API_KEY
+      c.api_secret = API_SECRET
+    end
+    
+Then, for example, to fetch all users:
+
+    Zoomba::User.list
+    
+It will return a collection of `Zoomba::User` instances.
+
+More usage tips to follow...
 
 ## Contributing
 
