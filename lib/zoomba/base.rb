@@ -35,9 +35,7 @@ module Zoomba
     end
 
     def self.resource_path_part
-      part = to_s.downcase.sub('zoomba::', '')
-      raise 'Zoomba::Base needs to be inherited from' if part.nil? || part.empty?
-      part
+      to_s.downcase.sub('zoomba::', '')
     end
 
     def resource_path_part
