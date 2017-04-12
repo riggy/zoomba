@@ -1,4 +1,5 @@
 module Zoomba
+  # A base class for all other Zoom.us resource 'models'
   class Base < OpenStruct
     def assign(args = {})
       args.each do |key, value|
@@ -9,7 +10,7 @@ module Zoomba
     end
 
     def self.perform_request(action, data = {})
-      uri = URI("#{Zoomba.configuration.api_base_url}/#{resource_path_part}/#{action}")
+      uri = resource_uri(action)
       response = Net::HTTP.start(uri.host,
                                  uri.port,
                                  use_ssl: true) do |http|
@@ -26,12 +27,11 @@ module Zoomba
     end
 
     def self.process_response(response)
-      if response.code == '200'
-        parsed = JSON.parse(response.body)
-        return parsed if parsed['error'].nil?
-        raise Error::ApiError.new(parsed['error']['message'],
-                                  parsed['error']['code'])
-      end
+      return unless response.code == '200'
+      parsed = JSON.parse(response.body)
+      return parsed if parsed['error'].nil?
+      raise Error::ApiError.new(parsed['error']['message'],
+                                parsed['error']['code'])
     end
 
     def self.resource_path_part
@@ -40,6 +40,11 @@ module Zoomba
 
     def resource_path_part
       self.class.resource_path_part
+    end
+
+    def self.resource_uri(action)
+      URI("#{Zoomba.configuration.api_base_url}/"\
+          "#{resource_path_part}/#{action}")
     end
   end
 end

@@ -1,4 +1,5 @@
 module Zoomba
+  # Class for mapping Zoom user resources along with required methods
   class User < Zoomba::Base
     class << self
       def create(args = {})
@@ -99,9 +100,8 @@ module Zoomba
     private
 
     def validate_presence_of(param)
-      if send(param).nil? || send(param).empty?
-        raise Zoomba::Error::RequiredParametersMissing, [param]
-      end
+      return unless send(param).nil? || send(param).empty?
+      raise Zoomba::Error::RequiredParametersMissing, [param]
     end
 
     def validate_params(params = {}, *expected)

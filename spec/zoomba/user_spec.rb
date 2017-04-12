@@ -1,4 +1,4 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe Zoomba::User do
   let(:class_api_methods) do
@@ -17,13 +17,12 @@ describe Zoomba::User do
     let(:params) { { foo: 'bar' }  }
 
     context 'calling any class api method' do
-
       before do
         expect(Zoomba::User).to receive(:validate_params)
-                                  .exactly(class_api_methods.size).times
+          .exactly(class_api_methods.size).times
         expect(Zoomba::User).to receive(:perform_request)
-                                  .and_return({attribute: 'value'})
-                                  .exactly(class_api_methods.size).times
+          .and_return(attribute: 'value')
+          .exactly(class_api_methods.size).times
       end
 
       specify 'always call validate_params' do
@@ -37,11 +36,11 @@ describe Zoomba::User do
       before do
         expect(Zoomba::User)
           .to receive(:validate_params)
-                .exactly(api_methods_returning_instance.size).times
+          .exactly(api_methods_returning_instance.size).times
         expect(Zoomba::User)
           .to receive(:perform_request)
-                .and_return({attribute: 'value'})
-                .exactly(api_methods_returning_instance.size).times
+          .and_return(attribute: 'value')
+          .exactly(api_methods_returning_instance.size).times
       end
 
       specify 'create a class instance' do
@@ -56,7 +55,7 @@ describe Zoomba::User do
     describe '#validate_params' do
       context 'when required params are present' do
         specify do
-          expect { Zoomba::User.validate_params({foo: 'bar'}, :foo) }
+          expect { Zoomba::User.validate_params({ foo: 'bar' }, :foo) }
             .not_to raise_error
         end
       end
@@ -75,13 +74,23 @@ describe Zoomba::User do
 
     %i(delete deactivate revoketoken permanentdelete get).each do |method|
       describe "##{method}" do
-        before do
-          expect(subject).to receive(:perform_request)
-          expect(subject).to receive(:assign)
+        context 'if object has an id' do
+          before do
+            expect(subject).to receive(:perform_request)
+            expect(subject).to receive(:assign)
+          end
+
+          it 'calls `assign` method to update object data' do
+            subject.send(method)
+          end
         end
 
-        it 'calls `assign` method to update object data' do
-          subject.send(method)
+        context 'if id is missing' do
+          subject { Zoomba::User.new(email: 'john@domain.com') }
+          specify do
+            expect { subject.send(method) }
+              .to raise_error Zoomba::Error::RequiredParametersMissing
+          end
         end
       end
     end
@@ -90,7 +99,7 @@ describe Zoomba::User do
       before do
         expect(subject)
           .to receive(:perform_request)
-                .and_return(id: 'some_id', updated_at: '2017-01-01 10:00:00')
+          .and_return(id: 'some_id', updated_at: '2017-01-01 10:00:00')
       end
 
       it 'updates object data' do

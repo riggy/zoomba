@@ -1,4 +1,4 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe Zoomba::Base do
   describe '#assign' do
@@ -22,21 +22,21 @@ describe Zoomba::Base do
       let(:invalid_response) do
         OpenStruct.new(
           code: '200',
-          body: { error: { message: 'message', code: '123'} }.to_json
+          body: { error: { message: 'message', code: '123' } }.to_json
         )
       end
 
       context 'when http response code == 200' do
         context 'and response contains an error' do
           it do
-            expect {Zoomba::Base.process_response(invalid_response)}
+            expect { Zoomba::Base.process_response(invalid_response) }
               .to raise_error(Zoomba::Error::ApiError)
           end
         end
 
         context 'when response is successful' do
           subject { Zoomba::Base.process_response(valid_response) }
-          it { is_expected.to eq({ 'foo' => 'bar' })}
+          it { is_expected.to eq('foo' => 'bar') }
         end
       end
 
@@ -45,25 +45,25 @@ describe Zoomba::Base do
         subject { Zoomba::Base.process_response(response) }
         it { is_expected.to eq nil }
       end
-
     end
 
     describe '#perform_request' do
       before do
-        stub_request(:post, "https://api.zoom.us/v1/base/some_action").
-          with(
-            body: {api_key: 'API_KEY', api_secret: 'API_SECRET', foo: 'bar'},
+        stub_request(:post, 'https://api.zoom.us/v1/base/some_action')
+          .with(
+            body: { api_key: 'API_KEY', api_secret: 'API_SECRET', foo: 'bar' },
             headers: {
-              'Accept'=>'*/*',
-              'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-              'Content-Type'=>'application/x-www-form-urlencoded',
-              'Host'=>'api.zoom.us', 'User-Agent'=>'Ruby'}
+              'Accept' => '*/*',
+              'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+              'Content-Type' => 'application/x-www-form-urlencoded',
+              'Host' => 'api.zoom.us', 'User-Agent' => 'Ruby'
+            }
           ).to_return(status: 200, body: { response: 'success' }.to_json)
       end
 
       specify do
         expect(Zoomba::Base.perform_request(:some_action, foo: 'bar'))
-          .to eq({'response' => 'success'})
+          .to eq('response' => 'success')
       end
     end
   end

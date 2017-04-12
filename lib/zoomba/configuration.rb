@@ -1,4 +1,5 @@
 module Zoomba
+  # Stores Zoomba configuration
   class Configuration
     attr_accessor :api_key, :api_secret, :api_base_url
 

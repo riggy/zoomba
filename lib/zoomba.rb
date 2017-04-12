@@ -9,6 +9,7 @@ require 'zoomba/configuration'
 require 'zoomba/user'
 require 'zoomba/version'
 
+# :nodoc:
 module Zoomba
   class << self
     attr_reader :configuration
