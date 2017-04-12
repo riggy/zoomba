@@ -103,5 +103,9 @@ module Zoomba
         raise Zoomba::Error::RequiredParametersMissing, [param]
       end
     end
+
+    def validate_params(params = {}, *expected)
+      self.class.validate_params(params, expected)
+    end
   end
 end

@@ -69,4 +69,47 @@ describe Zoomba::User do
       end
     end
   end
+
+  context 'instance methods' do
+    subject { Zoomba::User.new(id: 'some_id', email: 'john@domain.com') }
+
+    %i(delete deactivate revoketoken permanentdelete get).each do |method|
+      describe "##{method}" do
+        before do
+          expect(subject).to receive(:perform_request)
+          expect(subject).to receive(:assign)
+        end
+
+        it 'calls `assign` method to update object data' do
+          subject.send(method)
+        end
+      end
+    end
+
+    describe '#update' do
+      before do
+        expect(subject)
+          .to receive(:perform_request)
+                .and_return(id: 'some_id', updated_at: '2017-01-01 10:00:00')
+      end
+
+      it 'updates object data' do
+        subject.update(name: 'john smith')
+        expect(subject.name).to eq 'john smith'
+        expect(subject.updated_at).to eq '2017-01-01 10:00:00'
+      end
+    end
+
+    describe '#updatepassword' do
+      before do
+        expect(subject).to receive(:validate_params)
+        expect(subject).to receive(:perform_request)
+        expect(subject).to receive(:assign)
+      end
+
+      it 'calls `assign` method to update object data' do
+        subject.updatepassword(password: 'some password')
+      end
+    end
+  end
 end
