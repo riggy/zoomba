@@ -10,3 +10,4 @@
 /.idea/*
 .rspec_status
 coverage_report.sh
+*.gem
